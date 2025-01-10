@@ -1,10 +1,10 @@
 {
-	"id": "better-daily-notes",
-	"name": "Better Daily Notes",
-	"version": "1.0.0",
-	"minAppVersion": "0.15.0",
-	"description": "Automatically organizes daily notes into YYYY/MM folder structure for better file management",
-	"author": "duchangkim",
-	"authorUrl": "https://github.com/duchangkim",
-	"isDesktopOnly": false
+  "id": "better-daily-notes",
+  "name": "Better Daily Notes",
+  "version": "1.0.0",
+  "minAppVersion": "0.15.0",
+  "description": "Automatically organizes daily notes into YYYY/MM folder structure for better file management",
+  "author": "duchangkim",
+  "authorUrl": "https://github.com/duchangkim",
+  "isDesktopOnly": false
 }
