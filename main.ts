@@ -1,5 +1,5 @@
-import { LocaleStrings } from 'i18n/types';
 import { App, Plugin, PluginSettingTab, Setting, TFile, moment } from 'obsidian';
+import i18n from './i18n/i18n';
 
 interface BetterDailyNotesSettings {
   folderStructure: 'year' | 'year/month' | 'year/month/week';
@@ -24,11 +24,9 @@ interface CoreDailyNotesSettings {
 
 export default class MyPlugin extends Plugin {
   settings: BetterDailyNotesSettings;
-  i18n: LocaleStrings;
 
   async onload() {
     await this.loadSettings();
-    await this.loadLocale();
 
     // 'create' 이벤트는 vault가 오픈된 직후에도 호출되기 때문에 이를 무시하기 위해
     // 워크스페이스가 준비된 후에 이벤트 리스너 등록
@@ -186,24 +184,6 @@ export default class MyPlugin extends Plugin {
   async saveSettings() {
     await this.saveData(this.settings);
   }
-
-  async loadLocale() {
-    const locale = window.localStorage.getItem('language') || 'en';
-    try {
-      if (locale === 'ko') {
-        const module = await import('./i18n/ko');
-        this.i18n = module.default;
-      } else {
-        const module = await import('./i18n/en');
-        this.i18n = module.default;
-      }
-    } catch (error) {
-      console.error('Failed to load locale:', error);
-      // 로케일 로드 실패시 영어를 기본값으로 사용
-      const module = await import('./i18n/en');
-      this.i18n = module.default;
-    }
-  }
 }
 
 class BetterDailyNotesSettingTab extends PluginSettingTab {
@@ -233,8 +213,8 @@ class BetterDailyNotesSettingTab extends PluginSettingTab {
     placeholder: string,
   ): void {
     const setting = new Setting(containerEl)
-      .setName(this.plugin.i18n.settings.folderFormat[key].name)
-      .setDesc(this.plugin.i18n.settings.folderFormat[key].desc);
+      .setName(i18n.t(`settings.folderFormat.${key}.name`))
+      .setDesc(i18n.t(`settings.folderFormat.${key}.desc`));
 
     const previewEl = this.createFormatPreview(
       this.plugin.settings[settingKey] || DEFAULT_SETTINGS[settingKey],
@@ -255,20 +235,19 @@ class BetterDailyNotesSettingTab extends PluginSettingTab {
 
   display(): void {
     const { containerEl } = this;
-    const { i18n } = this.plugin;
     containerEl.empty();
 
-    containerEl.createEl('h2', { text: i18n.settings.title });
+    containerEl.createEl('h2', { text: i18n.t('settings.title') });
 
     // 폴더 구조 선택
     new Setting(containerEl)
-      .setName(i18n.settings.folderStructure.name)
-      .setDesc(i18n.settings.folderStructure.desc)
+      .setName(i18n.t('settings.folderStructure.name'))
+      .setDesc(i18n.t('settings.folderStructure.desc'))
       .addDropdown((dropdown) =>
         dropdown
-          .addOption('year', i18n.settings.folderStructure.options.year)
-          .addOption('year/month', i18n.settings.folderStructure.options.yearMonth)
-          .addOption('year/month/week', i18n.settings.folderStructure.options.yearMonthWeek)
+          .addOption('year', i18n.t('settings.folderStructure.options.year'))
+          .addOption('year/month', i18n.t('settings.folderStructure.options.yearMonth'))
+          .addOption('year/month/week', i18n.t('settings.folderStructure.options.yearMonthWeek'))
           .setValue(this.plugin.settings.folderStructure)
           .onChange(async (value: BetterDailyNotesSettings['folderStructure']) => {
             this.plugin.settings.folderStructure = value;
@@ -278,18 +257,18 @@ class BetterDailyNotesSettingTab extends PluginSettingTab {
 
     // 폴더 형식 설정 섹션
     containerEl.createEl('h2', {
-      text: i18n.settings.folderFormat.title,
+      text: i18n.t('settings.folderFormat.title'),
       attr: { style: 'margin-bottom: 0' },
     });
 
     const descEl = containerEl.createEl('p', {
-      text: i18n.settings.folderFormat.desc + ' ',
+      text: i18n.t('settings.folderFormat.desc') + ' ',
       cls: 'setting-item-description',
       attr: { style: 'margin-top: 0;' },
     });
 
     descEl.createEl('a', {
-      text: i18n.settings.folderFormat.momentDocsLink,
+      text: i18n.t('settings.folderFormat.momentDocsLink'),
       href: 'https://momentjs.com/docs/#/displaying/format/',
       attr: {
         target: '_blank',
