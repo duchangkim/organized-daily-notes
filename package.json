@@ -1,7 +1,7 @@
 {
-  "name": "obsidian-sample-plugin",
+  "name": "better-daily-notes",
   "version": "1.0.0",
-  "description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+  "description": "Automatically organizes your daily notes into customizable folder structures (Year/Month/Week) for better organization and easier navigation",
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",
@@ -11,8 +11,10 @@
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watch"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "obsidian plugin"
+  ],
+  "author": "duchangkim",
   "license": "MIT",
   "devDependencies": {
     "@duchi/prettier-config": "^1.0.10",
