@@ -12,9 +12,22 @@ export const english: LocaleStrings = {
         yearMonthWeek: 'Year/Month/Week (YYYY/MM/Week-N)',
       },
     },
-    folderDateFormat: {
-      name: 'Folder Date Format',
-      desc: 'Set the date format for folder names (Moment.js format)',
+    folderFormat: {
+      title: 'Folder Format Settings',
+      desc: 'Customize how your year, month, and week folders are named.',
+      momentDocsLink: 'Moment.js format reference',
+      year: {
+        name: 'Year Format',
+        desc: 'Format for year folders (e.g., YYYY, YY)',
+      },
+      month: {
+        name: 'Month Format',
+        desc: 'Format for month folders (e.g., MM, M, MMMM)',
+      },
+      week: {
+        name: 'Week Format',
+        desc: 'Format for week folders (e.g., W, WW, Wo)',
+      },
     },
   },
 };

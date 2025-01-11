@@ -12,9 +12,22 @@ const korean: LocaleStrings = {
         yearMonthWeek: '연도/월/주 (YYYY/MM/Week-N)',
       },
     },
-    folderDateFormat: {
-      name: '폴더 날짜 형식',
-      desc: '폴더명에 사용될 날짜 형식을 지정합니다.',
+    folderFormat: {
+      title: '폴더 형식 설정',
+      desc: '연도, 월, 주 폴더의 이름 형식을 지정할 수 있어요.',
+      momentDocsLink: 'Moment.js 포맷 참고',
+      year: {
+        name: '연도 형식',
+        desc: '연도 폴더의 형식 (예: YYYY, YY년도)',
+      },
+      month: {
+        name: '월 형식',
+        desc: '월 폴더의 형식 (예: MM, M, MMMM)',
+      },
+      week: {
+        name: '주 형식',
+        desc: '주 폴더의 형식 (예: W, WW, Wo)',
+      },
     },
   },
 };

@@ -1,16 +1,18 @@
 import { LocaleStrings } from 'i18n/types';
 import { App, Plugin, PluginSettingTab, Setting, TFile, moment } from 'obsidian';
 
-// Remember to rename these classes and interfaces!
-
 interface BetterDailyNotesSettings {
   folderStructure: 'year' | 'year/month' | 'year/month/week';
-  folderDateFormat: string;
+  yearFolderFormat: string;
+  monthFolderFormat: string;
+  weekFolderFormat: string;
 }
 
 const DEFAULT_SETTINGS: BetterDailyNotesSettings = {
   folderStructure: 'year/month',
-  folderDateFormat: 'YYYY/MM',
+  yearFolderFormat: 'YYYY',
+  monthFolderFormat: 'MM',
+  weekFolderFormat: 'W',
 };
 
 interface CoreDailyNotesSettings {
@@ -90,7 +92,6 @@ export default class MyPlugin extends Plugin {
     // 여기서부터 폴더 구조 변경 로직 구현
     console.log('Daily note created:', file.path);
     // TODO: 설정된 폴더 구조에 따라 파일 이동
-    // this.settings.
   }
 
   async loadSettings() {
@@ -128,6 +129,45 @@ class BetterDailyNotesSettingTab extends PluginSettingTab {
     this.plugin = plugin;
   }
 
+  private createFormatPreview(format: string): HTMLSpanElement {
+    const today = moment();
+    const formatted = today.format(format);
+
+    return createEl('strong', {
+      text: `→ ${formatted}`,
+      attr: {
+        style: 'color: var(--text-accent); margin-left: 10px; font-size: 0.9em; font-weight: bold',
+      },
+    });
+  }
+
+  private createFormatSetting(
+    containerEl: HTMLElement,
+    key: 'year' | 'month' | 'week',
+    settingKey: keyof Omit<BetterDailyNotesSettings, 'folderStructure'>,
+    placeholder: string,
+  ): void {
+    const setting = new Setting(containerEl)
+      .setName(this.plugin.i18n.settings.folderFormat[key].name)
+      .setDesc(this.plugin.i18n.settings.folderFormat[key].desc);
+
+    const previewEl = this.createFormatPreview(
+      this.plugin.settings[settingKey] || DEFAULT_SETTINGS[settingKey],
+    );
+    setting.descEl.appendChild(previewEl);
+
+    setting.addText((text) =>
+      text
+        .setPlaceholder(placeholder)
+        .setValue(this.plugin.settings[settingKey])
+        .onChange(async (value) => {
+          this.plugin.settings[settingKey] = value;
+          await this.plugin.saveSettings();
+          previewEl.textContent = `→ ${moment().format(value ? value : DEFAULT_SETTINGS[settingKey])}`;
+        }),
+    );
+  }
+
   display(): void {
     const { containerEl } = this;
     const { i18n } = this.plugin;
@@ -135,6 +175,7 @@ class BetterDailyNotesSettingTab extends PluginSettingTab {
 
     containerEl.createEl('h2', { text: i18n.settings.title });
 
+    // 폴더 구조 선택
     new Setting(containerEl)
       .setName(i18n.settings.folderStructure.name)
       .setDesc(i18n.settings.folderStructure.desc)
@@ -144,10 +185,35 @@ class BetterDailyNotesSettingTab extends PluginSettingTab {
           .addOption('year/month', i18n.settings.folderStructure.options.yearMonth)
           .addOption('year/month/week', i18n.settings.folderStructure.options.yearMonthWeek)
           .setValue(this.plugin.settings.folderStructure)
-          .onChange(async (value: 'year' | 'year/month' | 'year/month/week') => {
+          .onChange(async (value: BetterDailyNotesSettings['folderStructure']) => {
             this.plugin.settings.folderStructure = value;
             await this.plugin.saveSettings();
           }),
       );
+
+    // 폴더 형식 설정 섹션
+    containerEl.createEl('h2', {
+      text: i18n.settings.folderFormat.title,
+      attr: { style: 'margin-bottom: 0' },
+    });
+
+    const descEl = containerEl.createEl('p', {
+      text: i18n.settings.folderFormat.desc + ' ',
+      cls: 'setting-item-description',
+      attr: { style: 'margin-top: 0;' },
+    });
+
+    descEl.createEl('a', {
+      text: i18n.settings.folderFormat.momentDocsLink,
+      href: 'https://momentjs.com/docs/#/displaying/format/',
+      attr: {
+        target: '_blank',
+        rel: 'noopener',
+      },
+    });
+
+    this.createFormatSetting(containerEl, 'year', 'yearFolderFormat', 'YYYY');
+    this.createFormatSetting(containerEl, 'month', 'monthFolderFormat', 'MM');
+    this.createFormatSetting(containerEl, 'week', 'weekFolderFormat', 'W');
   }
 }

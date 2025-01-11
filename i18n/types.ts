@@ -10,9 +10,22 @@ export interface LocaleStrings {
         yearMonthWeek: string;
       };
     };
-    folderDateFormat: {
-      name: string;
+    folderFormat: {
+      title: string;
       desc: string;
+      momentDocsLink: string;
+      year: {
+        name: string;
+        desc: string;
+      };
+      month: {
+        name: string;
+        desc: string;
+      };
+      week: {
+        name: string;
+        desc: string;
+      };
     };
   };
 }
