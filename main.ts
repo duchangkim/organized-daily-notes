@@ -1,4 +1,5 @@
-import { App, Plugin, PluginSettingTab, Setting, TFile } from 'obsidian';
+import { LocaleStrings } from 'i18n/types';
+import { App, Plugin, PluginSettingTab, Setting, TFile, moment } from 'obsidian';
 
 // Remember to rename these classes and interfaces!
 
@@ -12,23 +13,11 @@ const DEFAULT_SETTINGS: BetterDailyNotesSettings = {
   folderDateFormat: 'YYYY/MM',
 };
 
-interface LocaleStrings {
-  settings: {
-    title: string;
-    folderStructure: {
-      name: string;
-      desc: string;
-      options: {
-        year: string;
-        yearMonth: string;
-        yearMonthWeek: string;
-      };
-    };
-    folderDateFormat: {
-      name: string;
-      desc: string;
-    };
-  };
+interface CoreDailyNotesSettings {
+  autorun: boolean;
+  template: string;
+  folder: string;
+  format: string;
 }
 
 export default class MyPlugin extends Plugin {
@@ -39,23 +28,70 @@ export default class MyPlugin extends Plugin {
     await this.loadSettings();
     await this.loadLocale();
 
-    // 데일리 노트 생성 시 폴더 구조를 관리하는 이벤트 리스너 등록
-    this.registerEvent(
-      this.app.vault.on('create', (file) => {
-        // 데일리 노트가 생성될 때 폴더 구조에 맞게 이동
-        this.handleDailyNoteCreation(file);
-      }),
-    );
+    // 워크스페이스가 준비된 후에 이벤트 리스너 등록
+    this.app.workspace.onLayoutReady(() => {
+      this.registerEvent(
+        this.app.vault.on('create', (file) => {
+          console.log('created file', file);
+          this.handleDailyNoteCreation(file);
+        }),
+      );
+    });
 
     // 설정 탭 추가
     this.addSettingTab(new BetterDailyNotesSettingTab(this.app, this));
   }
 
-  private async handleDailyNoteCreation(file: TFile) {
-    // 데일리 노트인지 확인하고 폴더 구조에 맞게 이동하는 로직 구현
+  private async getCoreDailyNotesSettings(): Promise<CoreDailyNotesSettings> {
+    const defaultCoreDailyNotesSettings: CoreDailyNotesSettings = {
+      autorun: false,
+      template: '',
+      folder: '/',
+      format: 'YYYY-MM-DD',
+    };
+    // data.json에서 daily-notes 플러그인 설정을 읽음
+    const data = await this.app.vault.adapter.read('.obsidian/daily-notes.json');
+
+    if (!data) {
+      return defaultCoreDailyNotesSettings;
+    }
+
+    try {
+      return {
+        ...defaultCoreDailyNotesSettings,
+        ...JSON.parse(data),
+      };
+    } catch {
+      return defaultCoreDailyNotesSettings;
+    }
   }
 
-  onunload() {}
+  private async handleDailyNoteCreation(file: TFile) {
+    const coreDailyNotesSettings = await this.getCoreDailyNotesSettings();
+
+    // 파일이 데일리 노트 폴더 내에 있는지 확인
+    const isInRootFolder = coreDailyNotesSettings.folder === '/';
+    const isInDailyNotesFolder = isInRootFolder
+      ? !file.path.startsWith('/') // 루트 폴더인 경우 경로가 '/'로 시작하지 않아야 함
+      : file.path.startsWith(`${coreDailyNotesSettings.folder}/`); // 아닌 경우 지정된 폴더 경로로 시작해야 함
+
+    if (!isInDailyNotesFolder) {
+      return;
+    }
+
+    // 파일명이 데일리 노트 형식과 일치하는지 확인
+    const fileName = file.basename;
+    const fileDate = moment(fileName, coreDailyNotesSettings.format, true);
+
+    if (!fileDate.isValid()) {
+      return;
+    }
+
+    // 여기서부터 폴더 구조 변경 로직 구현
+    console.log('Daily note created:', file.path);
+    // TODO: 설정된 폴더 구조에 따라 파일 이동
+    // this.settings.
+  }
 
   async loadSettings() {
     this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
@@ -110,19 +146,6 @@ class BetterDailyNotesSettingTab extends PluginSettingTab {
           .setValue(this.plugin.settings.folderStructure)
           .onChange(async (value: 'year' | 'year/month' | 'year/month/week') => {
             this.plugin.settings.folderStructure = value;
-            await this.plugin.saveSettings();
-          }),
-      );
-
-    new Setting(containerEl)
-      .setName(i18n.settings.folderDateFormat.name)
-      .setDesc(i18n.settings.folderDateFormat.desc)
-      .addText((text) =>
-        text
-          .setPlaceholder('YYYY-MM')
-          .setValue(this.plugin.settings.folderDateFormat)
-          .onChange(async (value) => {
-            this.plugin.settings.folderDateFormat = value;
             await this.plugin.saveSettings();
           }),
       );
