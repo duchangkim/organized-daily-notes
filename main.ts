@@ -1,5 +1,8 @@
 import { App, Plugin, PluginSettingTab, Setting, TFile, moment } from 'obsidian';
 import i18n from './i18n/i18n';
+import { DailyNoteService } from 'src/services/DailyNoteService';
+import { ObsidianFileSystem } from 'src/services/FileSystem';
+import { FolderStructureService } from 'src/services/FolderStructureService';
 
 interface BetterDailyNotesSettings {
   folderStructure: 'year' | 'year/month' | 'year/month/week';
@@ -24,21 +27,29 @@ interface CoreDailyNotesSettings {
 
 export default class MyPlugin extends Plugin {
   settings: BetterDailyNotesSettings;
+  private dailyNoteService: DailyNoteService;
 
   async onload() {
     await this.loadSettings();
 
-    // 'create' 이벤트는 vault가 오픈된 직후에도 호출되기 때문에 이를 무시하기 위해
-    // 워크스페이스가 준비된 후에 이벤트 리스너 등록
+    const fileSystem = new ObsidianFileSystem(this.app);
+    const folderStructureService = new FolderStructureService(this.settings, fileSystem);
+
+    // 서비스 초기화
+    this.dailyNoteService = new DailyNoteService(
+      fileSystem,
+      folderStructureService,
+      await this.getCoreDailyNotesSettings(),
+    );
+
     this.app.workspace.onLayoutReady(() => {
       this.registerEvent(
         this.app.vault.on('create', (file: TFile) => {
-          this.handleDailyNoteCreation(file);
+          this.dailyNoteService.handleDailyNoteCreation(file);
         }),
       );
     });
 
-    // 설정 탭 추가
     this.addSettingTab(new BetterDailyNotesSettingTab(this.app, this));
   }
 
@@ -63,116 +74,6 @@ export default class MyPlugin extends Plugin {
       };
     } catch {
       return defaultCoreDailyNotesSettings;
-    }
-  }
-
-  private async handleDailyNoteCreation(file: TFile) {
-    const coreDailyNotesSettings = await this.getCoreDailyNotesSettings();
-
-    // 파일명이 데일리 노트 형식과 일치하는지 확인
-    const fileName = file.basename;
-    const fileDate = moment(fileName, coreDailyNotesSettings.format, true);
-
-    if (!fileDate.isValid()) {
-      return;
-    }
-
-    // 새로운 폴더 경로 생성
-    const newFolderPath = this.createFolderPath(fileDate, coreDailyNotesSettings.folder);
-    if (!newFolderPath) {
-      return;
-    }
-
-    // 새 경로가 현재 경로와 다른 경우에만 이동
-    const newFilePath = `${newFolderPath}/${file.name}`;
-    if (newFilePath === file.path) {
-      return;
-    }
-
-    try {
-      // 이미 해당 경로에 파일이 존재하는지 확인
-      const exists = await this.app.vault.adapter.exists(newFilePath);
-      if (exists) {
-        // 이미 존재하는 파일이면 현재 파일을 삭제하고 기존 파일로 이동
-        const existingFile = this.app.vault.getAbstractFileByPath(newFilePath);
-        if (existingFile instanceof TFile) {
-          await this.app.vault.delete(file); // 현재 파일 삭제
-          await this.app.workspace.getLeaf().openFile(existingFile); // 기존 파일로 이동
-          return;
-        }
-      }
-
-      // 폴더가 없으면 생성
-      await this.ensureFolderExists(newFolderPath);
-      // 파일 이동
-      await this.app.fileManager.renameFile(file, newFilePath);
-    } catch (error) {
-      console.error('Failed to move daily note:', error);
-    }
-  }
-
-  private createFolderPath(date: moment.Moment, rootFolder: string): string | null {
-    const { folderStructure, yearFolderFormat, monthFolderFormat, weekFolderFormat } =
-      this.settings;
-
-    try {
-      const yearFolder = date.format(yearFolderFormat);
-      const monthFolder = date.format(monthFolderFormat);
-      const weekFolder = date.format(weekFolderFormat);
-
-      const basePath = rootFolder === '/' ? '' : rootFolder;
-
-      switch (folderStructure) {
-        case 'year':
-          return `${basePath}/${yearFolder}`;
-        case 'year/month':
-          return `${basePath}/${yearFolder}/${monthFolder}`;
-        case 'year/month/week':
-          return `${basePath}/${yearFolder}/${monthFolder}/${weekFolder}`;
-        default:
-          return null;
-      }
-    } catch (error) {
-      console.error('Failed to create folder path:', error);
-      return null;
-    }
-  }
-
-  private async ensureFolderExists(folderPath: string): Promise<void> {
-    // 빈 경로나 '/' 경로는 처리가 필요없음
-    if (!folderPath || folderPath === '/') {
-      return;
-    }
-
-    // 경로 정규화: 중복 슬래시 제거 및 앞뒤 슬래시 처리
-    const normalizedPath = folderPath
-      .replace(/\/+/g, '/') // 중복 슬래시를 단일 슬래시로
-      .replace(/^\//, '') // 시작 슬래시 제거
-      .replace(/\/$/, ''); // 끝 슬래시 제거
-
-    if (!normalizedPath) {
-      return;
-    }
-
-    const folders = normalizedPath.split('/').filter(Boolean);
-    let currentPath = '';
-
-    for (const folder of folders) {
-      // 폴더 이름이 비어있거나 유효하지 않은 문자가 있는지 확인
-      if (!folder || /[<>:"|?*]/.test(folder)) {
-        console.error(`Invalid folder name: ${folder}`);
-        continue;
-      }
-
-      currentPath += (currentPath ? '/' : '') + folder;
-      try {
-        if (!(await this.app.vault.adapter.exists(currentPath))) {
-          await this.app.vault.createFolder(currentPath);
-        }
-      } catch (error) {
-        console.error(`Failed to create folder: ${currentPath}`, error);
-        throw new Error(`Failed to create folder structure: ${error.message}`);
-      }
     }
   }
 
