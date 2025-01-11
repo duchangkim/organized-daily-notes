@@ -33,7 +33,6 @@ export default class MyPlugin extends Plugin {
     this.app.workspace.onLayoutReady(() => {
       this.registerEvent(
         this.app.vault.on('create', (file: TFile) => {
-          console.log('created file', file);
           this.handleDailyNoteCreation(file);
         }),
       );
