@@ -10,9 +10,9 @@ class I18n {
   private currentLocale = 'en';
 
   constructor() {
-    this.currentLocale = (window as any).localStorage.getItem('language') || 'en';
+    this.currentLocale = window.localStorage.getItem('language') || 'en';
     window.addEventListener('languagechange', () => {
-      this.currentLocale = (window as any).localStorage.getItem('language') || 'en';
+      this.currentLocale = window.localStorage.getItem('language') || 'en';
     });
   }
 
