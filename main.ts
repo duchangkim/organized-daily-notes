@@ -60,14 +60,17 @@ export default class BetterDailyNotesPlugin extends Plugin {
       folder: '/',
       format: 'YYYY-MM-DD',
     };
-    // daily-notes 플러그인 설정을 읽음
-    const data = await this.app.vault.adapter.read('.obsidian/daily-notes.json');
-
-    if (!data) {
-      return defaultCoreDailyNotesSettings;
-    }
 
     try {
+      // configDir을 사용하여 설정 파일 경로 구성
+      const data = await this.app.vault.adapter.read(
+        `${this.app.vault.configDir}/daily-notes.json`,
+      );
+
+      if (!data) {
+        return defaultCoreDailyNotesSettings;
+      }
+
       return {
         ...defaultCoreDailyNotesSettings,
         ...JSON.parse(data),
