@@ -25,7 +25,7 @@ interface CoreDailyNotesSettings {
   format: string;
 }
 
-export default class MyPlugin extends Plugin {
+export default class BetterDailyNotesPlugin extends Plugin {
   settings: BetterDailyNotesSettings;
   private dailyNoteService: DailyNoteService;
 
@@ -87,9 +87,9 @@ export default class MyPlugin extends Plugin {
 }
 
 class BetterDailyNotesSettingTab extends PluginSettingTab {
-  plugin: MyPlugin;
+  plugin: BetterDailyNotesPlugin;
 
-  constructor(app: App, plugin: MyPlugin) {
+  constructor(app: App, plugin: BetterDailyNotesPlugin) {
     super(app, plugin);
     this.plugin = plugin;
   }
