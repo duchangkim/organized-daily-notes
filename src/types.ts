@@ -1,4 +1,4 @@
-export interface BetterDailyNotesSettings {
+export interface OrganizedDailyNotesSettings {
   folderStructure: 'year' | 'year/month' | 'year/month/week';
   yearFolderFormat: string;
   monthFolderFormat: string;

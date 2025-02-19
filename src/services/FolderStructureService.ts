@@ -1,5 +1,5 @@
 import { IFileSystem } from 'src/services/FileSystem';
-import { BetterDailyNotesSettings } from 'src/types';
+import { OrganizedDailyNotesSettings } from 'src/types';
 
 type Moment = moment.Moment;
 
@@ -10,7 +10,7 @@ export interface IFolderStructureService {
 
 export class FolderStructureService implements IFolderStructureService {
   constructor(
-    private settings: BetterDailyNotesSettings,
+    private settings: OrganizedDailyNotesSettings,
     private fileSystem: IFileSystem,
   ) {}
 

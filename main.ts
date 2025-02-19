@@ -4,14 +4,14 @@ import { DailyNoteService } from 'src/services/DailyNoteService';
 import { ObsidianFileSystem } from 'src/services/FileSystem';
 import { FolderStructureService } from 'src/services/FolderStructureService';
 
-interface BetterDailyNotesSettings {
+interface OrganizedDailyNotesSettings {
   folderStructure: 'year' | 'year/month' | 'year/month/week';
   yearFolderFormat: string;
   monthFolderFormat: string;
   weekFolderFormat: string;
 }
 
-const DEFAULT_SETTINGS: BetterDailyNotesSettings = {
+const DEFAULT_SETTINGS: OrganizedDailyNotesSettings = {
   folderStructure: 'year/month',
   yearFolderFormat: 'YYYY',
   monthFolderFormat: 'MM',
@@ -25,8 +25,8 @@ interface CoreDailyNotesSettings {
   format: string;
 }
 
-export default class BetterDailyNotesPlugin extends Plugin {
-  settings: BetterDailyNotesSettings;
+export default class OrganizedDailyNotesPlugin extends Plugin {
+  settings: OrganizedDailyNotesSettings;
   private dailyNoteService: DailyNoteService;
 
   async onload() {
@@ -50,7 +50,7 @@ export default class BetterDailyNotesPlugin extends Plugin {
       );
     });
 
-    this.addSettingTab(new BetterDailyNotesSettingTab(this.app, this));
+    this.addSettingTab(new OrganizedDailyNotesSettingTab(this.app, this));
   }
 
   private async getCoreDailyNotesSettings(): Promise<CoreDailyNotesSettings> {
@@ -89,10 +89,10 @@ export default class BetterDailyNotesPlugin extends Plugin {
   }
 }
 
-class BetterDailyNotesSettingTab extends PluginSettingTab {
-  plugin: BetterDailyNotesPlugin;
+class OrganizedDailyNotesSettingTab extends PluginSettingTab {
+  plugin: OrganizedDailyNotesPlugin;
 
-  constructor(app: App, plugin: BetterDailyNotesPlugin) {
+  constructor(app: App, plugin: OrganizedDailyNotesPlugin) {
     super(app, plugin);
     this.plugin = plugin;
   }
@@ -112,7 +112,7 @@ class BetterDailyNotesSettingTab extends PluginSettingTab {
   private createFormatSetting(
     containerEl: HTMLElement,
     key: 'year' | 'month' | 'week',
-    settingKey: keyof Omit<BetterDailyNotesSettings, 'folderStructure'>,
+    settingKey: keyof Omit<OrganizedDailyNotesSettings, 'folderStructure'>,
     placeholder: string,
   ): void {
     const setting = new Setting(containerEl)
@@ -152,7 +152,7 @@ class BetterDailyNotesSettingTab extends PluginSettingTab {
           .addOption('year/month', i18n.t('settings.folderStructure.options.yearMonth'))
           .addOption('year/month/week', i18n.t('settings.folderStructure.options.yearMonthWeek'))
           .setValue(this.plugin.settings.folderStructure)
-          .onChange(async (value: BetterDailyNotesSettings['folderStructure']) => {
+          .onChange(async (value: OrganizedDailyNotesSettings['folderStructure']) => {
             this.plugin.settings.folderStructure = value;
             await this.plugin.saveSettings();
           }),

@@ -1,4 +1,4 @@
-# Better Daily Notes
+# Organized Daily Notes
 
 _다른 언어로 읽기: [English](README.md)_
 
@@ -33,7 +33,7 @@ _다른 언어로 읽기: [English](README.md)_
 
 1. Obsidian 설정 열기
 2. 커뮤니티 플러그인으로 이동하여 안전 모드 비활성화
-3. 찾아보기를 클릭하고 "Better Daily Notes" 검색
+3. 찾아보기를 클릭하고 "Organized Daily Notes" 검색
 4. 플러그인 설치 및 활성화
 
 ## 지원

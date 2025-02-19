@@ -1,8 +1,8 @@
-# Better Daily Notes
+# Organized Daily Notes
 
 _Read this in other languages: [한국어](README.ko.md)_
 
-Automatically organizes your daily notes into customizable folder structures for better organization and easier navigation.
+Automatically organizes your daily notes into customizable folder structures for enhanced organization and easier navigation.
 
 ## Features
 
@@ -33,7 +33,7 @@ The plugin provides several settings to customize your folder structure:
 
 1. Open Obsidian Settings
 2. Navigate to Community Plugins and disable Safe Mode
-3. Click Browse and search for "Better Daily Notes"
+3. Click Browse and search for "Organized Daily Notes"
 4. Install and enable the plugin
 
 ## Support
