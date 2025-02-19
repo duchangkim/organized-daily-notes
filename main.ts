@@ -103,9 +103,7 @@ class OrganizedDailyNotesSettingTab extends PluginSettingTab {
 
     return createEl('strong', {
       text: `→ ${formatted}`,
-      attr: {
-        style: 'color: var(--text-accent); margin-left: 10px; font-size: 0.9em; font-weight: bold',
-      },
+      cls: 'format-preview',
     });
   }
 
@@ -161,13 +159,12 @@ class OrganizedDailyNotesSettingTab extends PluginSettingTab {
     // 폴더 형식 설정 섹션
     containerEl.createEl('h2', {
       text: i18n.t('settings.folderFormat.title'),
-      attr: { style: 'margin-bottom: 0' },
+      cls: 'format-section-title',
     });
 
     const descEl = containerEl.createEl('p', {
       text: i18n.t('settings.folderFormat.desc') + ' ',
-      cls: 'setting-item-description',
-      attr: { style: 'margin-top: 0;' },
+      cls: 'setting-item-description format-section-description',
     });
 
     descEl.createEl('a', {

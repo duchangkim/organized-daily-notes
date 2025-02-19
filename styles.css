@@ -1,0 +1,14 @@
+.format-preview {
+  color: var(--text-accent);
+  margin-left: 10px;
+  font-size: 0.9em;
+  font-weight: bold;
+}
+
+.format-section-title {
+  margin-bottom: 0;
+}
+
+.format-section-description {
+  margin-top: 0;
+}
