@@ -136,8 +136,6 @@ class OrganizedDailyNotesSettingTab extends PluginSettingTab {
     const { containerEl } = this;
     containerEl.empty();
 
-    containerEl.createEl('h2', { text: i18n.t('settings.title') });
-
     // 폴더 구조 선택
     new Setting(containerEl)
       .setName(i18n.t('settings.folderStructure.name'))

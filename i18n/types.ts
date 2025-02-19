@@ -1,6 +1,5 @@
 export interface LocaleStrings {
   settings: {
-    title: string;
     folderStructure: {
       name: string;
       desc: string;
