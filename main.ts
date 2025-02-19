@@ -1,4 +1,4 @@
-import { App, Plugin, PluginSettingTab, Setting, TFile, moment } from 'obsidian';
+import { App, Plugin, PluginSettingTab, Setting, TFile } from 'obsidian';
 import i18n from './i18n/i18n';
 import { DailyNoteService } from 'src/services/DailyNoteService';
 import { ObsidianFileSystem } from 'src/services/FileSystem';
@@ -95,16 +95,6 @@ class OrganizedDailyNotesSettingTab extends PluginSettingTab {
   constructor(app: App, plugin: OrganizedDailyNotesPlugin) {
     super(app, plugin);
     this.plugin = plugin;
-  }
-
-  private createFormatPreview(format: string): HTMLSpanElement {
-    const today = moment();
-    const formatted = today.format(format);
-
-    return createEl('strong', {
-      text: `→ ${formatted}`,
-      cls: 'format-preview',
-    });
   }
 
   private createFormatSetting(
