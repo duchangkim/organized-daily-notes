@@ -38,7 +38,7 @@ The plugin provides several settings to customize your folder structure:
 
 ## Support
 
-If you encounter any issues or have suggestions, please [create an issue](https://github.com/duchangkim/obsidian-better-daily-notes/issues) on GitHub.
+If you encounter any issues or have suggestions, please [create an issue](https://github.com/duchangkim/organized-daily-notes/issues) on GitHub.
 
 ## License
 

@@ -38,7 +38,7 @@ _다른 언어로 읽기: [English](README.md)_
 
 ## 지원
 
-문제가 발생하거나 제안사항이 있으시다면 GitHub에서 [이슈를 생성](https://github.com/duchangkim/obsidian-better-daily-notes/issues)해 주세요.
+문제가 발생하거나 제안사항이 있으시다면 GitHub에서 [이슈를 생성](https://github.com/duchangkim/organized-daily-notes/issues)해 주세요.
 
 ## 라이센스
 
