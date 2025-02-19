@@ -143,10 +143,7 @@ class OrganizedDailyNotesSettingTab extends PluginSettingTab {
       );
 
     // 폴더 형식 설정 섹션
-    containerEl.createEl('h2', {
-      text: i18n.t('settings.folderFormat.title'),
-      cls: 'format-section-title',
-    });
+    new Setting(containerEl).setName(i18n.t('settings.folderFormat.title')).setHeading();
 
     const descEl = containerEl.createEl('p', {
       text: i18n.t('settings.folderFormat.desc') + ' ',
