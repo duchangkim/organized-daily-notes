@@ -1,7 +1,7 @@
 {
   "settings": {
     "folderStructure": {
-      "name": "Folder Structure",
+      "name": "Folder structure",
       "desc": "Choose the folder structure for daily notes",
       "options": {
         "year": "Year only (YYYY)",
@@ -10,19 +10,19 @@
       }
     },
     "folderFormat": {
-      "title": "Folder Format Settings",
+      "title": "Folder format settings",
       "desc": "Customize the format of year, month, and week folders.",
-      "momentDocsLink": "Moment.js Format Reference",
+      "momentDocsLink": "Moment.js format reference",
       "year": {
-        "name": "Year Format",
+        "name": "Year format",
         "desc": "Format for year folders (e.g., YYYY, YY)"
       },
       "month": {
-        "name": "Month Format",
+        "name": "Month format",
         "desc": "Format for month folders (e.g., MM, M, MMMM)"
       },
       "week": {
-        "name": "Week Format",
+        "name": "Week format",
         "desc": "Format for week folders (e.g., W, WW, Wo)"
       }
     }
