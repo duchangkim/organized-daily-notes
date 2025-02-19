@@ -117,19 +117,17 @@ class OrganizedDailyNotesSettingTab extends PluginSettingTab {
       .setName(i18n.t(`settings.folderFormat.${key}.name`))
       .setDesc(i18n.t(`settings.folderFormat.${key}.desc`));
 
-    const previewEl = this.createFormatPreview(
-      this.plugin.settings[settingKey] || DEFAULT_SETTINGS[settingKey],
-    );
-    setting.descEl.appendChild(previewEl);
+    const sampleEl = createEl('span', { cls: 'format-preview' });
+    setting.descEl.appendChild(sampleEl);
 
-    setting.addText((text) =>
-      text
+    setting.addMomentFormat((format) =>
+      format
         .setPlaceholder(placeholder)
         .setValue(this.plugin.settings[settingKey])
+        .setSampleEl(sampleEl)
         .onChange(async (value) => {
           this.plugin.settings[settingKey] = value;
           await this.plugin.saveSettings();
-          previewEl.textContent = `→ ${moment().format(value ? value : DEFAULT_SETTINGS[settingKey])}`;
         }),
     );
   }
