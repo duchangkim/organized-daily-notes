@@ -14,6 +14,10 @@ export class DailyNoteService implements IDailyNoteService {
     private coreDailyNotesSettings: CoreDailyNotesSettings,
   ) {}
 
+  private normalizePath(path: string): string {
+    return path.replace(/\\/g, '/').replace(/\/+/g, '/').replace(/^\//, '').replace(/\/$/, '');
+  }
+
   async handleDailyNoteCreation(file: TFile): Promise<void> {
     const fileName = file.basename;
     const fileDate = moment(fileName, this.coreDailyNotesSettings.format, true);
@@ -32,7 +36,10 @@ export class DailyNoteService implements IDailyNoteService {
     }
 
     const newFilePath = `${newFolderPath}/${file.name}`;
-    if (newFilePath === file.path) {
+    const normalizedNewPath = this.normalizePath(newFilePath);
+    const normalizedCurrentPath = this.normalizePath(file.path);
+
+    if (normalizedNewPath === normalizedCurrentPath) {
       return;
     }
 
