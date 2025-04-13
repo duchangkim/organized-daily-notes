@@ -57,11 +57,11 @@ export class DailyNoteService implements IDailyNoteService {
         return;
       }
 
-      await this.fileSystem.openFile(existingPath);
-
       if (await this.fileSystem.exists(file.path)) {
         await this.fileSystem.deleteFile(file.path);
       }
+
+      await this.fileSystem.openFile(existingPath);
     } catch (error) {
       console.error('Failed to handle existing file:', error);
     }
