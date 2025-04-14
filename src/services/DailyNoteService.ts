@@ -60,6 +60,7 @@ export class DailyNoteService implements IDailyNoteService {
   private async handleExistingFile(file: TFile, existingPath: string): Promise<void> {
     try {
       const existingFile = await this.fileSystem.getFile(existingPath);
+
       if (!existingFile) {
         return;
       }
@@ -68,7 +69,19 @@ export class DailyNoteService implements IDailyNoteService {
         await this.fileSystem.deleteFile(file.path);
       }
 
-      await this.fileSystem.openFile(existingPath);
+      let frameId: number | null = null;
+      await new Promise<void>((resolve) => {
+        frameId = requestAnimationFrame(async () => {
+          frameId = null;
+          await this.fileSystem.openFile(existingPath);
+
+          resolve();
+        });
+      }).finally(() => {
+        if (frameId !== null) {
+          cancelAnimationFrame(frameId);
+        }
+      });
     } catch (error) {
       console.error('Failed to handle existing file:', error);
     }
