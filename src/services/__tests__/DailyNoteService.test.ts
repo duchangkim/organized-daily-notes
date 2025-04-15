@@ -24,6 +24,7 @@ describe('DailyNoteService', () => {
       getFile: jest.fn(),
       openFile: jest.fn(),
       createFolder: jest.fn(),
+      openFileAndWaitUntilActive: jest.fn(),
     };
 
     mockFolderStructureService = {
@@ -74,14 +75,19 @@ describe('DailyNoteService', () => {
         path: 'Daily/2024-01-15.md',
       } as TFile;
 
+      const newPath = 'Daily/2024/01/2024-01-15.md';
       mockFolderStructureService.createFolderPath.mockReturnValue('Daily/2024/01');
-      mockFileSystem.exists.mockResolvedValue(true);
-      mockFileSystem.getFile.mockResolvedValue({} as TFile);
+      mockFileSystem.exists.mockResolvedValueOnce(true); // 새 경로에 파일이 존재
+      mockFileSystem.exists.mockResolvedValueOnce(true); // 현재 경로에 파일이 존재
+      mockFileSystem.getFile.mockResolvedValue(file);
+      mockFileSystem.openFileAndWaitUntilActive.mockResolvedValue();
 
       await service.handleDailyNoteCreation(file);
 
-      expect(mockFileSystem.deleteFile).toHaveBeenCalledWith('Daily/2024-01-15.md');
-      expect(mockFileSystem.openFile).toHaveBeenCalledWith('Daily/2024/01/2024-01-15.md');
+      expect(mockFileSystem.exists).toHaveBeenCalledWith(newPath);
+      expect(mockFileSystem.exists).toHaveBeenCalledWith(file.path);
+      expect(mockFileSystem.deleteFile).toHaveBeenCalledWith(file.path);
+      expect(mockFileSystem.openFileAndWaitUntilActive).toHaveBeenCalledWith(newPath);
     });
 
     // 날짜가 유효하지 않은 경우 파일을 이동하지 않아야 함
