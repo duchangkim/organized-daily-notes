@@ -69,19 +69,7 @@ export class DailyNoteService implements IDailyNoteService {
         await this.fileSystem.deleteFile(file.path);
       }
 
-      let frameId: number | null = null;
-      await new Promise<void>((resolve) => {
-        frameId = requestAnimationFrame(async () => {
-          frameId = null;
-          await this.fileSystem.openFile(existingPath);
-
-          resolve();
-        });
-      }).finally(() => {
-        if (frameId !== null) {
-          cancelAnimationFrame(frameId);
-        }
-      });
+      this.fileSystem.openFileAndWaitUntilActive(existingPath);
     } catch (error) {
       console.error('Failed to handle existing file:', error);
     }
