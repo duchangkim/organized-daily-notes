@@ -1,7 +1,7 @@
 {
 	"id": "organized-daily-notes",
 	"name": "Organized daily notes",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"minAppVersion": "0.15.0",
 	"description": "Automatically organizes your daily notes into customizable folder structures (Year/Month/Week) for enhanced organization and easier navigation",
 	"author": "duchangkim",
