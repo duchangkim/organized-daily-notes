@@ -1,6 +1,36 @@
-# Organized Daily Notes
+# [DEPRECATED] Organized Daily Notes
+
+> **Notice:** This plugin is now deprecated. The core Obsidian Daily Notes plugin already supports folder organization through format strings. Please use the core plugin instead.
 
 _Read this in other languages: [한국어](README.ko.md)_
+
+## Why deprecated?
+
+After further investigation, I discovered that Obsidian's core Daily Notes plugin already supports folder organization through its format string. You can achieve the same functionality by using format strings like:
+
+- `YYYY/MM/DD` for Year/Month structure
+- `YYYY/MM/W/DD` for Year/Month/Week structure
+
+This means this plugin's core functionality is redundant with what's already available in Obsidian.
+
+## Migration Guide
+
+1. Disable and uninstall this plugin
+2. Go to Obsidian Settings → Core plugins → Daily notes
+3. In the "Date format" field, use patterns like:
+   - `YYYY/MM/DD` - Creates Year/Month folders automatically
+   - `YYYY/MM/W/DD` - Creates Year/Month/Week folders automatically
+4. Your daily notes will now be organized using Obsidian's built-in functionality
+
+## Archive Notice
+
+This repository will remain available for reference but will no longer be actively maintained.
+
+Thank you to everyone who used and supported this plugin!
+
+---
+
+## Original Description
 
 Automatically organizes your daily notes into customizable folder structures for enhanced organization and easier navigation.
 
